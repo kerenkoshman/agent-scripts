@@ -1,12 +1,26 @@
 # Agent Scripts
 
-Shared agent instructions, skills, and small portable helpers for Peter's local workspaces.
+Shared agent instructions, skills, and small portable helpers — with a focus on **token efficiency**.
+
+This repo serves as a POC for optimizing skills and agent payloads for best token consumption: keeping the skills layer lean so it costs the minimum prompt budget, and providing pre-processing tools that compact large payloads before they reach a model. The goal is to measure and reduce the actual token cost of running agents at scale — from skill descriptions down to cron job data.
 
 This repo is the canonical place for:
 - `AGENTS.MD`: shared hard rules for Codex/Claude-style agents
 - `skills/`: reusable workflow skills, including repo-owned skills exposed by symlink
 - `scripts/`: dependency-light helpers used across projects
 - `hooks/`: local guardrails such as skill validation
+
+## Token Optimization Tools
+
+| Skill | Purpose |
+|---|---|
+| `skill-cleaner` | Audit skill roots: budget cost, duplicates, long descriptions, unused candidates |
+| `payload-slim` | Strip, filter, and compact JSON payloads before sending to a model |
+
+Typical workflow:
+1. Run `skill-cleaner` to measure how much of the model's context budget skills consume.
+2. Run `payload-slim --field-report` on any large cron payload to find the token hogs.
+3. Use `payload-slim --keep --max-str` to reduce payload size before passing to the agent.
 
 ## Skills
 
